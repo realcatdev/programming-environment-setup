@@ -201,6 +201,8 @@ DEV SETUP - NEXT STEPS
 Welcome.
 This guide explains what you just set up, why it matters, and where your files should go.
 
+First, copy the .continue folder into your home directory.
+
 --------------------------------
 1. Restart or log out
 --------------------------------
