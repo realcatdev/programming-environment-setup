@@ -27,7 +27,7 @@ sudo dnf install -y --skip-unavailable gstreamer1-plugins-{bad-*,good-*,base} gs
 
 sudo dnf install -y --skip-unavailable \
   git git-lfs curl wget make unzip zip tar \
-  zsh kitty tilix \
+  zsh tilix \
   nautilus nautilus-open-any-terminal \
   ripgrep fd fzf \
   bat eza btop tldr \
@@ -128,70 +128,14 @@ curl -fsSL https://fnm.vercel.app/install | bash
 sudo dnf install -y --skip-unavailable flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
 
-kwriteconfig5 --file powerdevilrc --group AC --key idleTime 0 || true
-kwriteconfig5 --file powerdevilrc --group AC --key suspendThenHibernate false || true
-kwriteconfig5 --file powerdevilrc --group AC --key suspendType 0 || true
-kwriteconfig5 --file powerdevilrc --group Battery --key idleTime 0 || true
-kwriteconfig5 --file powerdevilrc --group Battery --key suspendType 0 || true
-
-kwriteconfig5 --file kscreenlockerrc --group Daemon --key Autolock false || true
-kwriteconfig5 --file kscreenlockerrc --group Daemon --key Timeout 0 || true
-kwriteconfig5 --file kscreenlockerrc --group Daemon --key LockOnResume false || true
-
-if [ -e /var/lib/alternatives/x-terminal-emulator ]; then
-  sudo alternatives --set x-terminal-emulator /usr/bin/kitty || true
-fi
-
-xdg-mime default org.gnome.Nautilus.desktop inode/directory || true
-
-xdg-mime default code.desktop text/plain || true
-xdg-mime default code.desktop application/json || true
-xdg-mime default code.desktop application/xml || true
-xdg-mime default code.desktop application/javascript || true
-xdg-mime default code.desktop text/markdown || true
-
-xdg-settings set default-web-browser firefox.desktop || true
-
-gsettings set org.gnome.desktop.session idle-delay 0 || true
-gsettings set org.gnome.desktop.screensaver lock-enabled false || true
-
-gsettings set org.gnome.nautilus.preferences show-hidden-files true || true
-gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view' || true
-gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'always' || true
-
-gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 25 || true
-gsettings set org.gnome.desktop.peripherals.keyboard delay 200 || true
-gsettings set org.gnome.desktop.peripherals.mouse accel-profile 'flat' || true
-gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true || true
-gsettings set org.gnome.desktop.sound event-sounds false || true
-gsettings set org.gnome.desktop.media-handling automount true || true
-
-kwriteconfig5 --file klipperrc --group General --key MaxClipItems 100 || true
-kwriteconfig5 --file klipperrc --group General --key KeepClipboardContents true || true
-
-mkdir -p "$HOME/.config/pulse"
-printf '%s\n' 'autospawn = yes' > "$HOME/.config/pulse/client.conf"
 
 mkdir -p "$HOME/Code" "$HOME/Code/projects" "$HOME/Code/dotfiles"
 
 git config --global init.defaultBranch main
 
-if command -v qdbus-qt6 >/dev/null 2>&1; then
-  qdbus-qt6 org.kde.KWin /KWin reconfigure || true
-fi
-
 DESKTOP_DIR="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
 mkdir -p "$DESKTOP_DIR"
 DESKTOP_FILE="$DESKTOP_DIR/dev-next-steps.txt"
-
-PLASMA_CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-
-if [ -f "$PLASMA_CONFIG" ]; then
-  sed -i 's/org.kde.konsole.desktop//g' "$PLASMA_CONFIG"
-  if ! grep -q "kitty.desktop" "$PLASMA_CONFIG"; then
-    sed -i 's/launchers=/launchers=kitty.desktop,/g' "$PLASMA_CONFIG"
-  fi
-fi
 
 cat > "$DESKTOP_FILE" <<'EOF'
 ==============================
@@ -472,7 +416,7 @@ They control how your tools behave.
 
 Examples:
 ~/.zshrc
-~/.config/kitty/kitty.conf
+(example config folder in ~/.config)
 
 These are the real files your system actually uses.
 
@@ -511,7 +455,7 @@ That means this folder can now track versions of your config backups.
 Run:
 
 cp ~/.zshrc .
-cp -r ~/.config/kitty .
+# copy any relevant ~/.config folders you use
 
 What this means:
 
@@ -521,7 +465,7 @@ cp = copy
 
 So these commands copy:
 - your Zsh config
-- your Kitty config folder
+- any relevant config folders from ~/.config
 
 into:
 
@@ -530,7 +474,7 @@ into:
 Important:
 Your real config still lives in:
 - ~/.zshrc
-- ~/.config/kitty
+- ~/.config
 
 The dotfiles folder is your saved copy.
 
@@ -593,7 +537,7 @@ On another computer, replace YOURNAME with your GitHub username and run:
 
 git clone https://github.com/YOURNAME/dotfiles.git ~/Code/dotfiles
 cp ~/Code/dotfiles/.zshrc ~/
-cp -r ~/Code/dotfiles/kitty ~/.config/
+# copy any saved ~/.config folders back into ~/.config/
 
 This does two things:
 - downloads your saved config backup
@@ -613,7 +557,7 @@ Projects you actively build should usually go in:
 
 Live config files stay where the system expects them, such as:
 ~/.zshrc
-~/.config/kitty
+~/.config
 
 Backup copies of those configs go in:
 ~/Code/dotfiles
